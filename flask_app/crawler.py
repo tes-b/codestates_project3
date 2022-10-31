@@ -36,97 +36,133 @@ def collect_naver_data():
             if i > 5: break
             # print(tr)
             # print("======================================")
-            toon = {}
+            wt = {}
             if None == tr.select_one("a"): continue
-            toon["title"] = tr.select_one("a").string
-            toon["href"] = BASE_URL + tr.select_one("a")["href"]
-            toon["rate"] = float(tr.select_one(".rating_type > strong").string)
-            toon["id"] = int(re.findall(r"\d+", toon["href"])[0])
-            soup_into, page_into = get_page(toon["href"])
+            wt["title"] = tr.select_one("a").string
+            wt["platform"] = "naver"
+            wt["link"] = BASE_URL + tr.select_one("a")["href"]
+            wt["rate"] = float(tr.select_one(".rating_type > strong").string)
+            wt["site_id"] = int(re.findall(r"\d+", wt["href"])[0])
+            soup_into, page_into = get_page(wt["href"])
             author = soup_into.select_one(".wrt_nm").string.strip()
-            toon["author"] = str.split(author," / ")
+            wt["author"] = str.split(author," / ")
             genre = soup_into.select_one(".genre").string.strip()
-            toon["genre"] = str.split(genre,", ")
-            toon["age"] = soup_into.select_one(".age").string.strip()
-            toon["day"] = day
-            toon["views_rank"] = i
-            print(toon)
-            webtoons.append(toon)
+            wt["genre"] = str.split(genre,", ")
+            wt["age"] = soup_into.select_one(".age").string.strip()
+            wt["day"] = day
+            wt["views_rank"] = i
+            print(wt)
+            webtoons.append(wt)
             # print(toon)
         
     print(len(webtoons))
     return webtoons
 
-def collect_kakao_data():
-    from selenium import webdriver
-    # from selenium.common.exceptions import WebDriverException as WDE
-    from selenium.webdriver.common.keys import Keys    
-    from selenium.webdriver import ActionChains
-    import os 
-    import time
-    from html.parser import HTMLParser
+def save_html(name, filename):
+    file = open(filename, 'w')
+    file.write(str(name))
+    file.close()
+    print(f"Save {filename}")
 
-    PATH = os.getcwd() + "/flask_app/chromedriver"
-    "https://webtoon.kakao.com/original-webtoon?tab=mon"
-    BASE_URL = "https://webtoon.kakao.com"
-    days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
-    FULL_URL = BASE_URL + f"/original-webtoon?tab=mon"
 
-    browser = webdriver.Chrome(PATH)
-    browser.maximize_window()
-    # action = ActionChains(driver=browser)
-    print(FULL_URL)
-    browser.get(FULL_URL)
-    time.sleep(1)
-    html = browser.page_source
-    soup = BeautifulSoup(str(html),'html.parser')
-    body = soup.find("body")
-    next = body.select_one("#__next > .h-full > main > div > div")
-    uniqueid = next.find(__uniqueid="2")
-    div6 = uniqueid.select_one("div > .swiper-slide.swiper-slide-active > div > div")
+"""
+카카오 웹툰 크롤러
+카카오 웹툰 페이지 구조 다소 복잡
+시스템 및 평가 지표도 네이버와 다소 달라
+프로젝트 마감까지 완료하기 힘들 것으로 보임
+차후 추가
+"""
 
-    # div = uniqueid.select_one("div > .swiper-slide.swiper-slide-active > ")
-    # next = body.select_one("#__next")
-    # h_full = next.select_one(".h-full")
-    # main = h_full.select_one("main")
-    # div1 = main.select_one("div")
-    # div2 = div1.select_one("div")
-    # div3 = div2.find(__uniqueid="2")
-    # div4 = uniqueid.select_one("div")
-    # div5 = div4.select_one(".swiper-slide.swiper-slide-active")
-    # div6 = div5.select_one("div > div")
+# ====================================================== 
+# def collect_kakao_data():
+#     from selenium import webdriver
+#     import os 
+#     import time
 
-    div7 = div6.select_one(".relative.day-section")
-    div8 = div7.select("div")[19]
-    relatives = div8.select("div")
-    # print(relatives)
-    links = set()
-    for rel in relatives:
-        a = rel.select_one("a")
-        if None != a:
-            # print(a["href"])
-            links.add(a["href"])
+#     PATH = os.getcwd() + "/flask_app/chromedriver"
     
-    # print(links)
+#     BASE_URL = "https://webtoon.kakao.com"
+#     days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+#     webtoons = []
+    
+#     for day in days:
+#         FULL_URL = BASE_URL + f"/original-webtoon?tab={day}"
 
-    "https://webtoon.kakao.com/content/%EB%AC%B4%EC%A7%80%EA%B0%9C%EB%8B%A4%EB%A6%AC-%ED%8C%8C%EC%88%98%EA%BE%BC/2043"
-    for link in links:
-        CONTENT_URL = BASE_URL + link
-        # print(CONTENT_URL)
-        content, page = get_page(CONTENT_URL)
-        main = content.select_one("main")
-        print(main.get_text())
-        for i, val in enumerate(main.get_text()):
-            print(i, " : ", val)
-        break
+#         browser = webdriver.Chrome(PATH)
+#         browser.maximize_window()
         
-    #root > main > div > div.page.bg-background.activePage > div > div.h-full.overflow-hidden.w-full.z-1.fixed.inset-0.bg-dark-background > div.w-full.left-0.top-0.relative > div.content-main-wrapper.opacity-0.invisible.relative.current-content-main.opacity-100.\!visible.z-1 > div.pb-20.pt-96.relative.z-1 > div.relative.mx-auto.my-0.w-full.lg\:w-default-max-width > div.mx-20.flex.justify-between.relative.z-1.pointer-events-auto.pt-12 > div > p.whitespace-pre-wrap.break-all.break-words.support-break-word.overflow-hidden.text-ellipsis.\!whitespace-nowrap.s22-semibold-white.leading-33.mb-1.pr-45
+#         print(FULL_URL)
+#         browser.get(FULL_URL)
+#         time.sleep(1)
+#         html = browser.page_source
+#         soup = BeautifulSoup(str(html),'html.parser')
+#         body = soup.find("body")
+#         next = body.select_one("#__next > .h-full > main > div > div")
+#         uniqueid = next.find(__uniqueid="2")
+#         div6 = uniqueid.select_one("div > .swiper-slide.swiper-slide-active > div > div")
+#         div7 = div6.select_one(".relative.day-section")
+#         div8 = div7.select("div")[19]
+#         relatives = div8.select("div")
         
+#         for rel in relatives:
+            
+#             links = []
+#             bg = rel.select_one(".relative.w-full.bg-transparent")
+#             if None != bg:
+#                 # GET LINK
+#                 a = bg.select_one("a")
+#                 if None != a:
+#                     link = BASE_URL + a["href"]
+#                     print(link)
+#                     links.append(link)
+#                     # wt = {}
+#                     # wt["link"] = BASE_URL + a["href"]
+#                     # print(wt["link"])
+                    
+#                     # GET FOR ADULT
+#                     # wt["for_adult"] = False
+#                     # divs = bg.select_one("div").select("div")
+                    
+#                     # for div in divs:
+#                     #     div2 = div.select_one("div")
+#                     #     if None != div2:
+#                     #         img = div2.select_one("img")
+#                     #         if None == img:
+#                     #             # print(img["alt"])
+#                     #             # webtoons.append(wt)
+#                     #             links.append(link)
         
-    webtoons = []
 
+#         for link in links:
+#             print(link)
+#             wt = {}
+#             content, page = get_page(link)
+#             if None == content: continue
+#             wt["link"] = link
 
-    return webtoons
+#             main = content.select_one("main")
+#             strings = list(main.stripped_strings)
+#             wt["title"] = strings[1]
+#             wt["platform"] = "kakao"
+#             wt["site_id"] = int(re.findall(r"\d+", wt["link"])[0])
+            
+#             wt["author"] = str.split(strings[2],", ")
+#             wt["genre"] = str.split(strings[3],"/")
 
-collect_kakao_data()
+#             wt["day"] = day
+            
+#             wt["views"] = strings[4]
+#             wt["likes"] = strings[5]
+
+#             webtoons.append(wt)
+
+#     for wt in webtoons:
+#         print(wt["title"])
+#     # print(webtoons)
+
+#     return webtoons
+
+# collect_kakao_data()
+# ======================================================
+
 # naver_webtoons = collect_naver_data()
