@@ -1,68 +1,71 @@
-from importlib.resources import path
 import re
 import requests
 from bs4 import BeautifulSoup
 from requests.exceptions import HTTPError
 
-def get_page(page_url):
-    soup = None
-    page = None
+class Crawler:
 
-    with requests.get(page_url) as page:
-        try:
-            page.raise_for_status()
-        except HTTPError as Err:
-            print(Err)
-        else:
-            soup = BeautifulSoup(page.content, 'html.parser')
+    def __init__(self):
+        self.BASE_URL = "https://comic.naver.com"
 
-    return soup, page
+    def get_page(self, page_url):
+        soup = None
+        page = None
 
-def collect_naver_data():
-    
-    BASE_URL = "https://comic.naver.com"
-    days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
-    # day = "mon"
-    webtoons = []        
-    
-    for day in days:
+        with requests.get(page_url) as page:
+            try:
+                page.raise_for_status()
+            except HTTPError as Err:
+                print(Err)
+            else:
+                soup = BeautifulSoup(page.content, 'html.parser')
+
+        return soup, page
+
+    def collect_naver_data(self):
         
-        FULL_URL = BASE_URL + f"/webtoon/weekdayList?week={day}&order=ViewCount&view=list"
-        print(FULL_URL)
-        soup, page = get_page(FULL_URL)    
+        days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+        # day = "mon"
+        webtoons = []        
         
-        trs = soup.select("tr")
-        for i, tr in enumerate(trs):
-            if i > 5: break
-            # print(tr)
-            # print("======================================")
-            wt = {}
-            if None == tr.select_one("a"): continue
-            wt["title"] = tr.select_one("a").string
-            wt["platform"] = "naver"
-            wt["link"] = BASE_URL + tr.select_one("a")["href"]
-            wt["rate"] = float(tr.select_one(".rating_type > strong").string)
-            wt["site_id"] = int(re.findall(r"\d+", wt["href"])[0])
-            soup_into, page_into = get_page(wt["href"])
-            author = soup_into.select_one(".wrt_nm").string.strip()
-            wt["author"] = str.split(author," / ")
-            genre = soup_into.select_one(".genre").string.strip()
-            wt["genre"] = str.split(genre,", ")
-            wt["age"] = soup_into.select_one(".age").string.strip()
-            wt["day"] = day
-            wt["views_rank"] = i
-            print(wt)
-            webtoons.append(wt)
-            # print(toon)
-        
-    print(len(webtoons))
-    return webtoons
+        for day in days:
+            
+            FULL_URL = self.BASE_URL + f"/webtoon/weekdayList?week={day}&order=ViewCount&view=list"
+            print(FULL_URL)
+            soup, page = self.get_page(FULL_URL)    
+            
+            trs = soup.select("tr")
+            for i, tr in enumerate(trs):
+                if i > 5: break
+                # print(tr)
+                # print("======================================")
+                wt = {}
+                if None == tr.select_one("a"): continue
+                wt["title"] = tr.select_one("a").string
+                wt["platform"] = "naver"
+                wt["link"] = self.BASE_URL + tr.select_one("a")["href"]
+                wt["rate"] = float(tr.select_one(".rating_type > strong").string)
+                wt["site_id"] = int(re.findall(r"\d+", wt["href"])[0])
+                soup_into, page_into = self.get_page(wt["href"])
+                author = soup_into.select_one(".wrt_nm").string.strip()
+                wt["artist"] = str.split(author," / ")
+                genre = soup_into.select_one(".genre").string.strip()
+                wt["genre"] = str.split(genre,", ")
+                wt["age"] = soup_into.select_one(".age").string.strip()
+                wt["day"] = day
+                wt["views_rank"] = i
+                print(wt)
+                webtoons.append(wt)
+                # print(toon)
+            
+        print(len(webtoons))
+        return webtoons
 
-def save_html(name, filename):
-    file = open(filename, 'w')
-    file.write(str(name))
-    file.close()
-    print(f"Save {filename}")
+    def save_html(name, filename):
+        file = open(filename, 'w')
+        file.write(str(name))
+        file.close()
+        print(f"Save {filename}")
 
 
 """

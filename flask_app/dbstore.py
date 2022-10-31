@@ -1,4 +1,5 @@
 import psycopg2
+from crawler import Crawler
 
 host = "heffalump.db.elephantsql.com"
 user = 'sdjminza'
@@ -24,6 +25,39 @@ def db_init():
 def db_close(connection):
     connection.close()
 
-connection, cusor = db_init()
+def update(connection, cursor, data):
+    TABLE_WEBTOON = "webtoon"
+    TABLE_GENRE = "genre"
+    TABLE_ARTIST = "artist"
 
-db_close(connection)
+    query_table_webtoon = f"TRUNCATE TABLE IF EXISTS {TABLE_WEBTOON}"
+    # query_table_genre = f"TRUNCATE TABLE IF EXISTS {TABLE_GENRE}"
+    # query_table_ARTIST = f"TRUNCATE TABLE IF EXISTS {TABLE_ARTIST}"
+
+    cursor.execute(query_table_webtoon)
+
+    query_create_table = f"""
+        CREATE TABLE {TABLE_WEBTOON} (
+            id          INTEGER SERIAL PRIMARY KEY,
+            title       VARCHAR(128),
+            platform    VARCHAR(64),
+            link        VARCHAR(128),
+            rate        FLOAT,
+            for_adult   BOOLEAN,
+            views_rank  INTEGER         
+        )
+    """
+
+def db_update():
+    connection, cusor = db_init()
+    crawler = Crawler()
+    webtoons = crawler.collect_naver_data()
+
+
+
+    db_close(connection)
+
+
+
+
+
