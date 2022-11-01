@@ -78,51 +78,66 @@
                 <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">검색</button>
             </div>
         </div>
-        <p>{{ res }}</p>
-        <table border="1" width="1000" align="center">
+        <div>
+            <table width="1024" align="center">
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">월</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">화</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">수</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">목</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">금</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">토</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">일</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!-- <p>{{ res }}</p> -->
+        <table border="1" width="1024" align="center">
             <tr align="center">
-                <p>
-                    <td colspan="3" span style="color:white">오늘의 웹툰</td>
-                </p>
+                <td colspan="6">오늘의 웹툰</td>
             </tr>
             <tr align="center">
-                <td>순위(별점순)</td>
+                <!-- <td>순위(별점순)</td> -->
                 <td>썸네일</td>
                 <td>제목</td>
                 <td>작가</td>
                 <td>별점</td>
                 <td>장르</td>
                 <td>요일</td>
-                <td>보러가기</td>
+                <!-- <td>보러가기</td> -->
             </tr>
-            <tr>
-                <td></td>
-                <td>1,000,000</td>
-                <td></td>
+            {% for item in res %}
+            <tr align="center">
+                <td>
+                    <img src="{{item[11]}}"  title="{{item[1]}}" alt="{{item[1]}}" width="125" height="101">
+                </td>
+                <td>
+                    <A href = "{{item[3]}}" target = "링크 방법" >{{item[1]}}</A>
+                </td>
+                <td>{{ item[4] }}</td>
+                <td>{{ item[7] }}</td>
+                <td>{{ item[5] }}</td>
+                <td>{{ item[6] }}</td>
+                <!-- <td>{{ item[3] }}</td> -->
             </tr>
-            <tr>
-                <td>점심값</td>
-                <td></td>
-                <td>5,000</td>
-            </tr>
-            <tr>
-                <td>부모님선물</td>
-                <td></td>
-                <td>30,000</td>
-            </tr>
-            <tr>
-                <td rowspan="3" align="center" bgcolor="skyblue">총계</td>
-                <td>수입</td>
-                <td>지출</td>
-            </tr>
-            <tr>
-                <td>1,000,000</td>
-                <td>35,000</td>
-            </tr>
-            <tr>
-                <td>남은돈</td>
-                <td>965,000</td>
-            </tr>
+            {% endfor %}
+            
+
+            
         </table>
 
 
@@ -145,5 +160,3 @@
 
 
 </body>
-
-</html>

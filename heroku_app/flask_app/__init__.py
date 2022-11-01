@@ -8,7 +8,7 @@ def create_app():
     @app.route('/')
     def index():
         database = Database()
-        query_list_all = f"""SELECT * FROM webtoons WHERE day='tue' ORDER BY rate"""
+        query_list_all = f"""SELECT * FROM webtoons WHERE day='tue' ORDER BY rate DESC"""
         res = database.execute_all(query_list_all)
         database.db_close()
         return render_template("index.html", res=res), 200
