@@ -3,7 +3,6 @@
 <html lang="en">
 
 <head>
-    <!-- <base href="https://proj3-webtoon-board.herokuapp.com/" target="_blank"> -->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -76,41 +75,13 @@
             <div class="form-group">
                 <h3>웹툰 찾기</h3>
                 <!-- <label for="exampleFormControlInput1">웹툰 찾기</label> -->
-                <input type="text" name="input_name" class="form-control" placeholder="추천 웹툰" id="search_kw">
+                <input type="text" name="input_name" class="form-control" placeholder="검색어" id="search_kw">
                 <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">검색</button>
             </div>
         </div>
-        <div>
-            <table width="1024" align="center">
-                <tr>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">월</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">화</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">수</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">목</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">금</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">토</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">일</button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <!-- <p>{{ res }}</p> -->
         <table border="1" width="1024" align="center">
             <tr align="center">
-                <td colspan="6">오늘의 웹툰</td>
+                <td colspan="7">검색 결과</td>
             </tr>
             <tr align="center">
                 <!-- <td>순위(별점순)</td> -->
@@ -120,7 +91,7 @@
                 <td>별점</td>
                 <td>장르</td>
                 <td>요일</td>
-                <!-- <td>보러가기</td> -->
+                <td width="300">소개</td>
             </tr>
             {% for item in res %}
             <tr align="center">
@@ -134,7 +105,7 @@
                 <td>{{ item[7] }}</td>
                 <td>{{ item[5] }}</td>
                 <td>{{ item[6] }}</td>
-                <!-- <td>{{ item[3] }}</td> -->
+                <td><font size="1">{{ item[10] }}</font></td>
             </tr>
             {% endfor %}
         </table>
@@ -157,5 +128,4 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="./static/ie10-viewport-bug-workaround.js"></script>
 
-
-</body>
+</body> 
