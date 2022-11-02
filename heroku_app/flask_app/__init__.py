@@ -4,14 +4,16 @@ from flask import Flask, render_template
 def create_app():
     from flask_app.module.dbModule import Database
     from flask_app.module.visualiser import Visualiser
-
-
+    import datetime
+    
     app = Flask(__name__)
 
     @app.route('/')
     def index():
+        days = ["mon","tue","wed","thr","fri","sat","sun"]
+        d = datetime.datetime.today().weekday()
         database = Database()
-        query_list_all = f"""SELECT * FROM webtoons WHERE day='tue' ORDER BY rate DESC"""
+        query_list_all = f"""SELECT * FROM webtoons WHERE day='{days[d]}' ORDER BY rate DESC"""
         res = database.execute_all(query_list_all)
         database.db_close()
 
@@ -36,35 +38,63 @@ def create_app():
         query_top10_rate = f"""SELECT * FROM webtoons ORDER BY rate DESC LIMIT 10"""
         top10_rate = database.execute_all(query_top10_rate)
 
-        query_count_genre = f"""SELECT genre, COUNT(*) 
+        query_count_genre = f"""
+        SELECT genre, COUNT(*) 
         FROM webtoons 
         GROUP BY genre 
         ORDER BY COUNT(*) 
-        DESC LIMIT 5"""
+        LIMIT 10
+        """
         count_genre = database.execute_all(query_count_genre)
 
-        query_rank_genre = f"""SELECT sub.genre, COUNT(*)
+        query_rank_genre = f"""
+        SELECT sub.genre, COUNT(*)
         FROM (SELECT title, genre FROM webtoons WHERE views_rank < 20) AS sub
         GROUP BY sub.genre
         ORDER BY COUNT(*) DESC
         LIMIT 5"""
         rank_genre = database.execute_all(query_rank_genre)
-    
+
+        query_rate_genre = f"""
+        SELECT genre, AVG(rate)
+        FROM webtoons 
+        GROUP BY genre
+        ORDER BY AVG(rate) DESC
+        """
+        rate_genre = database.execute_all(query_rate_genre)
+        
+
         database.db_close()
 
         visual = Visualiser()
         visual.pie(count_genre,"장르별 작품 수")
         visual.hbar(rank_genre,"장르별 인기도")
+        visual.vbar(rate_genre,"장르별 평균 별점")
         
         return render_template('dashboard.html', 
                                 top1_views_day=top1_views_day,
                                 top10_rate=top10_rate,
                                 )
 
-    # @app.route('/result/',defaults={'username':'이름도 몰라서 어떻게 코딩할래'}, methods=['GET'])
-    # @app.route('/result/<username>', methods=['GET'])
-    # def result(username):
-    #     return render_template('result.html', username=username)
+    @app.route('/weekday/',defaults={'day':'mon'}, methods=['GET'])
+    @app.route('/weekday/<day>', methods=['GET'])
+    def weekday(day):
+        days_kr = {
+            "mon":"월",
+            "tue":"화",
+            "wed":"수",
+            "thu":"목",
+            "fri":"금",
+            "sat":"토",
+            "sun":"일"
+            }
+
+        database = Database()
+        query_list_all = f"""SELECT * FROM webtoons WHERE day='{day}' ORDER BY rate DESC"""
+        res = database.execute_all(query_list_all)
+        database.db_close()
+
+        return render_template('weekday.html',res=res, day=days_kr[day])
 
     if __name__ == '__main__':
         app.run(debug=True)

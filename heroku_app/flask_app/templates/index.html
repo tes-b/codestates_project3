@@ -56,6 +56,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="./">웹툰사무소</a>
             </div>
@@ -63,7 +64,8 @@
                 <ul class="nav navbar-nav">
                     <!-- <li class="active"><a href="./recommend">추천받기</a></li> -->
                     <li><a href="./dashboard">Dashboard</a></li>
-                    <li><a href="http://bootstrapk.com/examples/starter-template/#about">About</a></li>
+                    <li><a href="./weekday">Weekday</a></li>
+                    <li><a href="./about">About</a></li>
                     <li><a href="./contact">Contact</a></li>
                 </ul>
             </div>
@@ -74,40 +76,19 @@
     <div class="container">
         <div class="search-bar">
             <div class="form-group">
-                <h3>웹툰 찾기</h3>
-                <!-- <label for="exampleFormControlInput1">웹툰 찾기</label> -->
-                <input type="text" name="input_name" class="form-control" placeholder="추천 웹툰" id="search_kw">
-                <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">검색</button>
+                <h3>웹툰 검색</h3>
+                <table width="600">
+                    <tr>
+                        <td>
+                            <input type="text" name="input_name" class="form-control" placeholder="추천 웹툰" id="search_kw" width="500">
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">검색</button>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
-        <div>
-            <table width="1024" align="center">
-                <tr>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">월</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">화</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">수</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">목</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">금</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">토</button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">일</button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <!-- <p>{{ res }}</p> -->
         <table border="1" width="1024" align="center">
             <tr align="center">
                 <td colspan="6">오늘의 웹툰</td>
@@ -152,10 +133,10 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../static/jquery.min.js"></script>
-    <script src="../static/bootstrap.min.js"></script>
+    <script src="./static/jquery.min.js"></script>
+    <script src="./static/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../static/ie10-viewport-bug-workaround.js"></script>
+    <script src="./static/ie10-viewport-bug-workaround.js"></script>
 
 
 </body>
