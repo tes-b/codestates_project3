@@ -4,19 +4,43 @@ from flask import Flask, render_template
 def create_app():
     from flask_app.module.dbModule import Database
     from flask_app.module.visualiser import Visualiser
+    from flask_app.module.crawler import Crawler
     import datetime
-    
+    import time
+    import atexit
+    # from apscheduler.schedulers.background import BackgroundScheduler
+
     app = Flask(__name__)
 
-    @app.route('/')
+    # def update_datebase():
+    #     # print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+    #     crawler = Crawler()
+    #     data = crawler.collect_naver_data()
+    #     database = Database()
+    #     database.update(data)
+    #     print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+
+
+    # scheduler = BackgroundScheduler()
+    # # scheduler.add_job(func=print_date_time, trigger="interval", seconds=300)
+    # scheduler.add_job(func=update_datebase, run_date='2022-11-02 23:25:00')
+    
+    # scheduler.start()
+
+    # # Shut down the scheduler when exiting the app
+    # atexit.register(lambda: scheduler.shutdown())
+
+    
+
+    @app.route('/',methods=['GET'])
     def index():
-        days = ["mon","tue","wed","thr","fri","sat","sun"]
+        days = ["mon","tue","wed","thu","fri","sat","sun"]
         d = datetime.datetime.today().weekday()
         database = Database()
         query_list_all = f"""SELECT * FROM webtoons WHERE day='{days[d]}' ORDER BY rate DESC"""
         res = database.execute_all(query_list_all)
         database.db_close()
-
+        # print(res)
         return render_template("index.html", res=res), 200
     
     # @app.route('/search/',defaults={'input':'추천 웹툰'}, methods=['GET'])
@@ -26,7 +50,7 @@ def create_app():
         query_list_all = f"""SELECT * FROM webtoons WHERE title LIKE '%%{kw}%%' ORDER BY rate DESC"""
         res = database.execute_all(query_list_all)
         database.db_close()
-        # res=query_list_all
+        # print(res)
         return render_template('search.html', kw=kw, res=res)
     
     @app.route('/dashboard/',methods=['GET'])
@@ -95,6 +119,14 @@ def create_app():
         database.db_close()
 
         return render_template('weekday.html',res=res, day=days_kr[day])
+
+    @app.route('/about/', methods=['GET'])
+    def about():
+        return render_template('about.html')
+
+    @app.route('/contact/', methods=['GET'])
+    def contact():
+        return render_template('contact.html')
 
     if __name__ == '__main__':
         app.run(debug=True)

@@ -3,70 +3,74 @@ import requests
 from bs4 import BeautifulSoup
 from requests.exceptions import HTTPError
 
+class Crawler:
+    def __init__(self):
+        pass
 
-def get_page(page_url):
-    soup = None
-    page = None
+    def get_page(self,page_url):
+        soup = None
+        page = None
 
-    with requests.get(page_url) as page:
-        try:
-            page.raise_for_status()
-        except HTTPError as Err:
-            print(Err)
-        else:
-            soup = BeautifulSoup(page.content, 'html.parser')
+        with requests.get(page_url) as page:
+            try:
+                page.raise_for_status()
+            except HTTPError as Err:
+                print(Err)
+            else:
+                soup = BeautifulSoup(page.content, 'html.parser')
 
-    return soup, page
+        return soup, page
 
-def collect_naver_data():
-    BASE_URL = "https://comic.naver.com"    
-    days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
-    # day = "mon"
-    webtoons = []        
-    
-    for day in days:
+    def collect_naver_data(self):
+        print("naver_webtoon_crawling starts.")
+        BASE_URL = "https://comic.naver.com"    
+        days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+        # day = "mon"
+        webtoons = []        
         
-        FULL_URL = BASE_URL + f"/webtoon/weekdayList?week={day}&order=ViewCount&view=list"
-        # print(FULL_URL)
-        soup, page = get_page(FULL_URL)    
-        
-        trs = soup.select("tr")
-        for i, tr in enumerate(trs):
-            # if i > 5: break
-            # print(tr)
-            # print("======================================")
-            wt = {}
-            if None == tr.select_one("a"): continue
-            wt["title"] = tr.select_one("a").string
-            wt["platform"] = "naver"
-            wt["link"] = BASE_URL + tr.select_one("a")["href"]
-            wt["rate"] = float(tr.select_one(".rating_type > strong").string)
-            wt["site_id"] = int(re.findall(r"\d+", wt["link"])[0])
-            soup_into, page_into = get_page(wt["link"])
-            author = soup_into.select_one(".wrt_nm").string.strip()
-            wt["artist"] = str.split(author," / ")
-            genre = soup_into.select_one(".genre").string.strip()
-            wt["genre"] = str.split(genre,", ")
-            age = soup_into.select_one(".age").string.strip()
-            wt["for_adult"] = True if age == "18세 이용가" else False
-            wt["day"] = day
-            wt["views_rank"] = i
-            wt["synopsis"] = soup_into.select_one("div.comicinfo > div.detail > p").get_text()
-            wt["thumbnail_link"] = soup_into.select_one("div.comicinfo > div.thumb > a > img")["src"]
-            # print(wt)
-            webtoons.append(wt)
+        for day in days:
             
-            # print(toon)
-        print(day + " DONE")
-        
-    print(len(webtoons))
-    return webtoons
+            FULL_URL = BASE_URL + f"/webtoon/weekdayList?week={day}&order=ViewCount&view=list"
+            # print(FULL_URL)
+            soup, page = self.get_page(FULL_URL)    
+            
+            trs = soup.select("tr")
+            for i, tr in enumerate(trs):
+                # if i > 5: break
+                # print(tr)
+                # print("======================================")
+                wt = {}
+                if None == tr.select_one("a"): continue
+                wt["title"] = tr.select_one("a").string
+                wt["platform"] = "naver"
+                wt["link"] = BASE_URL + tr.select_one("a")["href"]
+                wt["rate"] = float(tr.select_one(".rating_type > strong").string)
+                wt["site_id"] = int(re.findall(r"\d+", wt["link"])[0])
+                soup_into, page_into = self.get_page(wt["link"])
+                author = soup_into.select_one(".wrt_nm").string.strip()
+                wt["artist"] = str.split(author," / ")
+                genre = soup_into.select_one(".genre").string.strip()
+                wt["genre"] = str.split(genre,", ")
+                age = soup_into.select_one(".age").string.strip()
+                wt["for_adult"] = True if age == "18세 이용가" else False
+                wt["day"] = day
+                wt["views_rank"] = i
+                wt["synopsis"] = soup_into.select_one("div.comicinfo > div.detail > p").get_text()
+                wt["thumbnail_link"] = soup_into.select_one("div.comicinfo > div.thumb > a > img")["src"]
+                # print(wt)
+                webtoons.append(wt)
+                
+                # print(toon)
+            print(day + " DONE")
+            
+        print(len(webtoons))
+        return webtoons
 
-def save_html(name, filename):
-    file = open(filename, 'w')
-    file.write(str(name))
-    file.close()
-    print(f"Save {filename}")
+    def save_html(name, filename):
+        file = open(filename, 'w')
+        file.write(str(name))
+        file.close()
+        print(f"Save {filename}")
 
 
 

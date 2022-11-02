@@ -41,7 +41,7 @@ class Database:
         
         return True, "table truncated"
 
-    def dupdate(self, data):
+    def process_data(self, data):
 
         values = []
         # print(data["title"])
@@ -64,10 +64,14 @@ class Database:
                 val["rate"],
                 val["for_adult"],
                 val["views_rank"],
-                val["synopsis"]
+                val["synopsis"],
+                val["thumbnail_link"]
                 )
             values.append(wt)
+        return values
 
+    def insert_data(self, values):
+        
         qr_insert = f"""
             INSERT INTO {TABLE_WEBTOONS} (
                 title,
@@ -79,13 +83,18 @@ class Database:
                 rate,
                 for_adult,
                 views_rank,
-                synopsis
+                synopsis,
+                thumbnail_link
                 )
                 VALUES %s
         """
-
-        execute_values(self.cursor, qr_insert, values)
-        self.connection.commit()
+        try:
+            execute_values(self.cursor, qr_insert, values)
+            self.connection.commit()
+            return True, print("data insert done")            
+        except Exception as e:
+            self.db_close()
+            return False, print("EXCEPTION : ", e)            
 
 
     def create_tables(self):
@@ -94,13 +103,13 @@ class Database:
 
         try:
             self.cursor.execute(query_drop_webtoons)
+            self.connection.commit()
 
         except Exception as e:
             print('EXCEPTION : ', e)
             self.db_close()
-            return "create table fail"
+            return False, print("EXCEPTION : ", e)
         
-        self.connection.commit()
         print("table dropped")
 
         qr_create_table_webtoon = f"""
@@ -115,7 +124,8 @@ class Database:
                 rate        FLOAT,
                 for_adult   BOOLEAN,
                 views_rank  INTEGER,
-                synopsis    VARCHAR(512)
+                synopsis    VARCHAR(512),
+                thumbnail_link VARCHAR(256)
             )
         """
 
@@ -124,9 +134,9 @@ class Database:
             self.commit()
         except Exception as e:
             self.db_close()
-            return print("EXCEPTION : ", e)
+            return False, print("EXCEPTION : ", e)
 
-        return print("table created")
+        return True, print("table created")
 
     def execute_all(self, query, args={}):
         self.cursor.execute(query, args)
@@ -143,6 +153,16 @@ class Database:
 
     def commit(self):
         self.connection.commit()
+
+    def update(self, data):
+        values = self.process_data(data)
+        result, _ = self.create_tables()
+        if result:
+            result, _ = self.insert_data(values)
+            if result: 
+                return True, print("data update done.")
+        
+
 
 
 
