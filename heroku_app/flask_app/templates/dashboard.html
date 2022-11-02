@@ -16,14 +16,14 @@
     <title>웹툰 사무소</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="./static/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="./static/starter-template.css" rel="stylesheet">
+    <link href="../static/starter-template.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="./static/ie-emulation-modes-warning.js"></script>
+    <script src="../static/ie-emulation-modes-warning.js"></script>
 
     <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
@@ -37,6 +37,9 @@
             return url;
         }
     </script>
+
+    <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+    <script src="../static/plotly-latest.min.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -57,25 +60,33 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="./">웹툰사무소</a>
+                <a class="navbar-brand" href="../">웹툰사무소</a>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <!-- <li class="active"><a href="./recommend">추천받기</a></li> -->
-                    <li><a href="./dashboard">dashboard</a></li>
+                    <li><a href="../dashboard">dashboard</a></li>
                     <li><a href="http://bootstrapk.com/examples/starter-template/#about">About</a></li>
-                    <li><a href="./contact">Contact</a></li>
+                    <li><a href="../contact">Contact</a></li>
                 </ul>
             </div>
             <!--/.nav-collapse -->
         </div>
     </nav>
 
-    <!-- <div class="container"> -->
-        <div style="with:40%;float:left;display:inline;">
-            <table id="tb1" border="1" style="with:40%">
+    <!-- MAIN TABLE -->
+    <div class="container">
+    <!-- GRAGHS -->
+        <div style="float:left;display:inline;margin-right: 20px">
+            <iframe src="../static/charts/piechart.html" width="500" height="400" frameborder="0" framespacing="0" marginheight="0" marginwidth="0" scrolling="no" vspace="0"></iframe>
+        </div>
+        <div style="float:center;display:inline;">
+            <iframe src="../static/charts/hbarchart.html" width="500" height="400" frameborder="0" framespacing="0" marginheight="0" marginwidth="0" scrolling="no" vspace="0"></iframe>
+        </div>
+        <div style="float:left;display:inline;margin-right: 20px">
+            <table id="tb1" border="1" style="padding: 15px;">
                 <tr align="center">
-                    <td colspan="6">별점 TOP 10</td>
+                    <td colspan="6" align="center"><h3>별점 TOP 10</h3></td>
                 </tr>
                 <tr align="center">
                     <td>썸네일</td>
@@ -88,23 +99,23 @@
                     <td rowspan="2">
                         <img src="{{item[11]}}" title="{{item[1]}}" alt="{{item[1]}}" width="125" height="101">
                     </td>
-                    <td>
+                    <td style="padding: 15px;">
                         <A href="{{item[3]}}" target="링크 방법">{{item[1]}}</A>
                     </td>
-                    <td rowspan="2">{{ item[5] }}</td>
-                    <td rowspan="2">{{ item[7] }}</td>
+                    <td rowspan="2" style="padding: 15px;">{{ item[5] }}</td>
+                    <td rowspan="2" style="padding: 15px;">{{ item[7] }}</td>
                 </tr>
-                <tr align="center">
+                <tr align="center" style="padding: 15px;">
                     <td>{{ item[4] }}</td>
                 </tr>
                 {% endfor %}
             </table>
         </div>
 
-        <div style="with:40%;float:center;display:inline;">
-            <table id="tb2" border="1" style="with:40%">
+        <div style="float:center;display:inline;">
+            <table id="tb2" border="1" style="padding: 15px;">
                 <tr align="center">
-                    <td colspan="6">요일별 조회수 1위</td>
+                    <td colspan="6" align="center"><h3>요일별 조회수 1위</h3></td>
                 </tr>
                 <tr align="center">
                     <td>썸네일</td>
@@ -114,39 +125,32 @@
                     <td>요일</td>
                 </tr>
                 {% for item in top1_views_day %}
-                <tr align="center">
+                <tr align="center" style="padding: 15px;">
                     <td rowspan="2">
                         <img src="{{item[11]}}" title="{{item[1]}}" alt="{{item[1]}}" width="125" height="101">
                     </td>
-                    <td>
+                    <td style="padding: 15px;">
                         <A href="{{item[3]}}" target="링크 방법">{{item[1]}}</A>
                     </td>
-                    <td rowspan="2">{{ item[7] }}</td>
-                    <td rowspan="2">{{ item[5] }}</td>
-                    <td rowspan="2">{{ item[6] }}</td>
+                    <td rowspan="2" style="padding: 15px;">{{ item[7] }}</td>
+                    <td rowspan="2" style="padding: 15px;">{{ item[5] }}</td>
+                    <td rowspan="2" style="padding: 15px;">{{ item[6] }}</td>
                     <tr align="center">
-                        <td>{{ item[4] }}</td>
+                        <td style="padding: 15px;">{{ item[4] }}</td>
                     </tr>
                 </tr>
                 {% endfor %}
             </table>
         </div>
-        <!-- <div class="starter-template">
-            <h1>Bootstrap starter template</h1>
-            <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text
-                and a mostly barebones HTML document.</p>
-        </div> -->
-
-    <!-- </div>/.container -->
-
+    </div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="./static/jquery.min.js"></script>
-    <script src="./static/bootstrap.min.js"></script>
+    <script src="../static/jquery.min.js"></script>
+    <script src="../static/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="./static/ie10-viewport-bug-workaround.js"></script>
+    <script src="../static/ie10-viewport-bug-workaround.js"></script>
 
 
 </body>

@@ -67,13 +67,6 @@ def save_html(name, filename):
     file.close()
     print(f"Save {filename}")
 
-# import plotly.graph_objects as go
-# fig = go.Figure(data=go.Bar(y=[2, 3, 1]))
-# fig.write_html('first_figure.html', auto_open=True)
-# html = fig.to_html()
-# print(html)
-# fig.write_html('first_figure.html')
-
 
 """
 카카오 웹툰 크롤러
