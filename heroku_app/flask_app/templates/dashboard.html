@@ -3,6 +3,7 @@
 <html lang="en">
 
 <head>
+    <!-- <base href="https://proj3-webtoon-board.herokuapp.com/" target="_blank"> -->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -36,7 +37,7 @@
             return url;
         }
     </script>
-    
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -70,56 +71,73 @@
         </div>
     </nav>
 
-    <div class="container">
-        <div class="search-bar">
-            <div class="form-group">
-                <h3>웹툰 찾기</h3>
-                <!-- <label for="exampleFormControlInput1">웹툰 찾기</label> -->
-                <input type="text" name="input_name" class="form-control" placeholder="검색어" id="search_kw">
-                <button type="button" class="btn btn-primary" onclick="document.location.href=getvalue()">검색</button>
-            </div>
+    <!-- <div class="container"> -->
+        <div style="with:40%;float:left;display:inline;">
+            <table id="tb1" border="1" style="with:40%">
+                <tr align="center">
+                    <td colspan="6">별점 TOP 10</td>
+                </tr>
+                <tr align="center">
+                    <td>썸네일</td>
+                    <td>제목/작가</td>
+                    <td>장르</td>
+                    <td>별점</td>
+                </tr>
+                {% for item in top10_rate %}
+                <tr align="center">
+                    <td rowspan="2">
+                        <img src="{{item[11]}}" title="{{item[1]}}" alt="{{item[1]}}" width="125" height="101">
+                    </td>
+                    <td>
+                        <A href="{{item[3]}}" target="링크 방법">{{item[1]}}</A>
+                    </td>
+                    <td rowspan="2">{{ item[5] }}</td>
+                    <td rowspan="2">{{ item[7] }}</td>
+                </tr>
+                <tr align="center">
+                    <td>{{ item[4] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
-        <table border="1" width="1024" align="center">
-            <tr align="center">
-                <td colspan="8">검색 결과</td>
-            </tr>
-            <tr align="center">
-                <!-- <td>순위(별점순)</td> -->
-                <td>썸네일</td>
-                <td>제목</td>
-                <td>작가</td>
-                <td>별점</td>
-                <td>장르</td>
-                <td>요일</td>
-                <td>플랫폼</td>
-                <td width="300">소개</td>
-            </tr>
-            {% for item in res %}
-            <tr align="center">
-                <td>
-                    <img src="{{item[11]}}"  title="{{item[1]}}" alt="{{item[1]}}" width="125" height="101">
-                </td>
-                <td>
-                    <A href = "{{item[3]}}" target = "링크 방법" >{{item[1]}}</A>
-                </td>
-                <td>{{ item[4] }}</td>
-                <td>{{ item[7] }}</td>
-                <td>{{ item[5] }}</td>
-                <td>{{ item[6] }}</td>
-                <td>{{ item[2] }}</td>
-                <td><font size="1">{{ item[10] }}</font></td>
-            </tr>
-            {% endfor %}
-        </table>
 
-
+        <div style="with:40%;float:center;display:inline;">
+            <table id="tb2" border="1" style="with:40%">
+                <tr align="center">
+                    <td colspan="6">요일별 조회수 1위</td>
+                </tr>
+                <tr align="center">
+                    <td>썸네일</td>
+                    <td>제목/작가</td>
+                    <td>별점</td>
+                    <td>장르</td>
+                    <td>요일</td>
+                </tr>
+                {% for item in top1_views_day %}
+                <tr align="center">
+                    <td rowspan="2">
+                        <img src="{{item[11]}}" title="{{item[1]}}" alt="{{item[1]}}" width="125" height="101">
+                    </td>
+                    <td>
+                        <A href="{{item[3]}}" target="링크 방법">{{item[1]}}</A>
+                    </td>
+                    <td rowspan="2">{{ item[7] }}</td>
+                    <td rowspan="2">{{ item[5] }}</td>
+                    <td rowspan="2">{{ item[6] }}</td>
+                    <tr align="center">
+                        <td>{{ item[4] }}</td>
+                    </tr>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
         <!-- <div class="starter-template">
             <h1>Bootstrap starter template</h1>
             <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text
                 and a mostly barebones HTML document.</p>
         </div> -->
 
-    </div><!-- /.container -->
+    <!-- </div>/.container -->
 
 
     <!-- Bootstrap core JavaScript
@@ -130,4 +148,5 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="./static/ie10-viewport-bug-workaround.js"></script>
 
-</body> 
+
+</body>
