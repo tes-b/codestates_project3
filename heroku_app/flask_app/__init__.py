@@ -8,27 +8,25 @@ def create_app():
     import datetime
     import time
     import atexit
-    # from apscheduler.schedulers.background import BackgroundScheduler
+    from apscheduler.schedulers.background import BackgroundScheduler
 
     app = Flask(__name__)
 
-    # def update_datebase():
-    #     # print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
-    #     crawler = Crawler()
-    #     data = crawler.collect_naver_data()
-    #     database = Database()
-    #     database.update(data)
-    #     print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+    scheduler = BackgroundScheduler()
+    # scheduler.add_job(func=update_datebase, trigger="interval", hours=12)
 
+    @scheduler.scheduled_job('cron', hour='09', minute='00', id='scraper')
+    def update_datebase():
+        crawler = Crawler()
+        data = crawler.collect_naver_data()
+        database = Database()
+        database.update(data)
+        print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
 
-    # scheduler = BackgroundScheduler()
-    # # scheduler.add_job(func=print_date_time, trigger="interval", seconds=300)
-    # scheduler.add_job(func=update_datebase, run_date='2022-11-02 23:25:00')
-    
-    # scheduler.start()
+    scheduler.start()
 
-    # # Shut down the scheduler when exiting the app
-    # atexit.register(lambda: scheduler.shutdown())
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: scheduler.shutdown())
 
     
 
